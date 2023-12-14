@@ -1,10 +1,10 @@
 import { contas } from "../bancoDeDados/bancodedados.js"
 
-export const mensagemJson = (statusCode, objRes, msg = undefined) => {
+export const msgJson = (statusCode, objRes, msg = undefined) => {
     if (msg === undefined) return objRes.status(statusCode).json()
 
     if (typeof msg === 'object') return objRes.status(statusCode).json(msg)
-    
+
     return objRes.status(statusCode).json({mensagem: msg})
 }
 

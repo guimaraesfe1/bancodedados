@@ -1,12 +1,12 @@
 import { banco, contas, depositos, saques, transferencias } from "../bancoDeDados/bancodedados.js"
-import { mensagemJson, propInformada } from "../servicos/servicos.js"
+import { msgJson, propInformada } from "../servicos/servicos.js"
 
 export const listarContas = (req, res) => {
     const { senha_banco } = req.query
     const senhaNaoInformada = propInformada('senha do banco', senha_banco, res)
-    if (senhaNaoInformada) return mensagemJson(...senhaNaoInformada)
-    if (senha_banco !== banco.senha) return mensagemJson(403, res, 'Senha do banco invalida!')
-    mensagemJson(200, res, contas)
+    if (senhaNaoInformada) return msgJson(...senhaNaoInformada)
+    if (senha_banco !== banco.senha) return msgJson(403, res, 'Senha do banco invalida!')
+    msgJson(200, res, contas)
 }
 
 export const criarConta = (req, res) => {
@@ -18,30 +18,30 @@ export const criarConta = (req, res) => {
         saldo: 0,
         usuario: {...req.body}
     })
-    mensagemJson(201, res)
+    msgJson(201, res)
 }
 
 export const atualizarConta = (req, res) => {
     const { contaAtual } = req
     contaAtual.usuario = {...req.body}
-    mensagemJson(204, res)
+    msgJson(204, res)
 }
 
 export const deletarConta = (req, res) => {
     const { indiceConta } = req
     contas.splice(indiceConta, 1)
-    mensagemJson(204, res)
+    msgJson(204, res)
 }
 
 export const depositarConta = (req, res) => {
     const { valor } = req.body
     const { contaAtual, dataAtual } = req
     const valorNaoinformado = propInformada('valor', valor, res)
-    if (valorNaoinformado) return mensagemJson(...valorNaoinformado)
-    if (valor <= 0 || typeof valor !== 'number') return mensagemJson(400, res, 'Informe um valor valido maior que 0!')
+    if (valorNaoinformado) return msgJson(...valorNaoinformado)
+    if (valor <= 0 || typeof valor !== 'number') return msgJson(400, res, 'Informe um valor valido maior que 0!')
     contaAtual.saldo += valor
     depositos.push({data: dataAtual, numero_conta: contaAtual.numero, valor})
-    mensagemJson(204, res)
+    msgJson(204, res)
 }
 
 export const sacarConta = (req, res) => {
@@ -49,7 +49,7 @@ export const sacarConta = (req, res) => {
     const { contaAtual, dataAtual } = req
     contaAtual.saldo -= valor
     saques.push({ data: dataAtual, numero_conta: contaAtual.numero, valor})
-    mensagemJson(200, res)
+    msgJson(200, res)
 }
 
 export const transferirConta = (req, res) => {
@@ -63,10 +63,10 @@ export const transferirConta = (req, res) => {
         numero_conta_destino: destino.numero,
         valor
     })
-    mensagemJson(204, res)
+    msgJson(204, res)
 }
 
-export const saldoConta = (req, res) => mensagemJson(200, res, { saldo: req.contaAtual.saldo})
+export const saldoConta = (req, res) => msgJson(200, res, { saldo: req.contaAtual.saldo})
 
 export const extratoConta = (req, res) => {
     const { numero } = req.contaAtual
@@ -77,7 +77,7 @@ export const extratoConta = (req, res) => {
         if (t.numero_conta_origem === numero) transferenciasEnviadasId.push(t)
         if (t.numero_conta_destino === numero) transferenciasRecebidasId.push(t)
     })
-    mensagemJson(200, res, {
+    msgJson(200, res, {
         depositos: depositosId,
         saques: saquesId,
         transferenciasEnviadas: transferenciasEnviadasId,
